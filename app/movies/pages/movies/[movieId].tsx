@@ -12,10 +12,9 @@ import ReviewForm from "app/reviews/components/ReviewForm"
 import { ReviewList } from "app/reviews/components/ReviewList"
 import createReview from "app/reviews/mutations/createReview"
 import { BlitzPage, Link, useMutation, useParam, useQuery } from "blitz"
-import Rate from "rc-rate"
-import "rc-rate/assets/index.css"
-import { Suspense } from "react"
+import { Suspense, useState } from "react"
 import { RiEditCircleLine, RiHeartFill, RiPlayFill, RiShareBoxFill } from "react-icons/ri"
+import Rating from "react-simple-star-rating"
 import { ages } from "utils/ages"
 import { formatMoney } from "utils/formatMoney"
 
@@ -36,6 +35,33 @@ export const Movie = () => {
     where: { movieId },
   })
 
+  const [starRating, setStarRating] = useState(0)
+
+  const handleRating = async (rate) => {
+    rate = rate * 2 * 10
+    setStarRating(rate)
+    try {
+      await createOrUpdateRatingMutation({
+        where: {
+          userId_movieId: { userId: currentUser!.id, movieId: movie.id },
+        },
+        data: {
+          movie: { connect: { id: movie.id } },
+          user: {
+            connect: {
+              id: currentUser?.id,
+            },
+          },
+          value: rate,
+        },
+      })
+      refetchRating()
+      averageRatingRefetch()
+    } catch (error) {
+      alert("You must be logged in to perform this action"!)
+    }
+  }
+
   if (movie) {
     return (
       <div className="pb-10">
@@ -54,9 +80,13 @@ export const Movie = () => {
                   <span className="ml-3">{movie.release}</span>
                   <span className="mx-2">&bull;</span>
                   <div>
-                    <span>Action, Thriller</span>
+                    {movie.genres.map((genre, i) => (
+                      <span key={i}>
+                        {genre.genre.name}
+                        <span className="mx-2">&bull;</span>
+                      </span>
+                    ))}
                   </div>
-                  <span className="mx-2">&bull;</span>
                   <span>
                     {Math.floor(movie.runtime / 60)}h {movie.runtime % 60}m
                   </span>
@@ -90,7 +120,7 @@ export const Movie = () => {
                     <div>
                       <a>
                         <RiHeartFill
-                          className={favourite ? "text-red-500" : ""}
+                          className={`${favourite ? "text-red-500" : ""} cursor-pointer`}
                           onClick={async () => {
                             try {
                               await createOrDeleteFavouriteMutation({
@@ -130,63 +160,16 @@ export const Movie = () => {
                       </a>
                     </Link>
                     <a className="ml-5">
-                      {/* This is done like this on purpose */}
-                      {rating ? (
-                        <Rate
-                          allowHalf
-                          defaultValue={rating.value / 2 / 10}
-                          onChange={async (e) => {
-                            try {
-                              await createOrUpdateRatingMutation({
-                                where: {
-                                  userId_movieId: { userId: currentUser!.id, movieId: movie.id },
-                                },
-                                data: {
-                                  movie: { connect: { id: movie.id } },
-                                  user: {
-                                    connect: {
-                                      id: currentUser?.id,
-                                    },
-                                  },
-                                  value: e * 2 * 10,
-                                },
-                              })
-                              refetchRating()
-                              averageRatingRefetch()
-                            } catch (error) {
-                              alert("You must be logged in to perform this action"!)
-                            }
-                          }}
-                        />
-                      ) : null}
-                      {!rating && (
-                        <Rate
-                          allowHalf
-                          defaultValue={0}
-                          onChange={async (e) => {
-                            try {
-                              await createOrUpdateRatingMutation({
-                                where: {
-                                  userId_movieId: { userId: currentUser!.id, movieId: movie.id },
-                                },
-                                data: {
-                                  movie: { connect: { id: movie.id } },
-                                  user: {
-                                    connect: {
-                                      id: currentUser?.id,
-                                    },
-                                  },
-                                  value: e * 2 * 10,
-                                },
-                              })
-                              refetchRating()
-                              averageRatingRefetch()
-                            } catch (error) {
-                              alert("You must be logged in to perform this action"!)
-                            }
-                          }}
-                        />
-                      )}
+                      <Rating
+                        className="flex"
+                        onClick={handleRating}
+                        ratingValue={rating ? rating.value : starRating}
+                        size={20}
+                        transition
+                        fillColor="orange"
+                        emptyColor="gray"
+                      />
+                      {/* defaultValue={rating.value / 2 / 10} */}
                     </a>
                   </div>
                   <a href={movie.trailer} target="_blank" className="flex items-center">

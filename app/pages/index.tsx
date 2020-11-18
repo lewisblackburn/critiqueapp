@@ -9,9 +9,8 @@ import { Img } from "react-image"
 
 // TODO:
 /*
-  9. Movie locked when done
-  17. add image placeholders
-  18. fix
+  1. add image placeholders
+    2. different star library  
 */
 
 const Banner = () => {

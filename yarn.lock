@@ -9983,15 +9983,6 @@ rc-motion@^2.0.0:
     classnames "^2.2.1"
     rc-util "^5.2.1"
 
-rc-rate@2.9.1:
-  version "2.9.1"
-  resolved "https://registry.yarnpkg.com/rc-rate/-/rc-rate-2.9.1.tgz#e43cb95c4eb90a2c1e0b16ec6614d8c43530a731"
-  integrity sha512-MmIU7FT8W4LYRRHJD1sgG366qKtSaKb67D0/vVvJYR0lrCuRrCiVQ5qhfT5ghVO4wuVIORGpZs7ZKaYu+KMUzA==
-  dependencies:
-    "@babel/runtime" "^7.10.1"
-    classnames "^2.2.5"
-    rc-util "^5.0.1"
-
 rc-slider@9.6.3:
   version "9.6.3"
   resolved "https://registry.yarnpkg.com/rc-slider/-/rc-slider-9.6.3.tgz#7bf8bc8581ae14ed7130d6a7edda3bb3a1b0deba"
@@ -10022,7 +10013,7 @@ rc-trigger@^5.0.0:
     rc-motion "^2.0.0"
     rc-util "^5.5.0"
 
-rc-util@^5.0.0, rc-util@^5.0.1, rc-util@^5.2.1, rc-util@^5.3.0, rc-util@^5.5.0:
+rc-util@^5.0.0, rc-util@^5.2.1, rc-util@^5.3.0, rc-util@^5.5.0:
   version "5.5.0"
   resolved "https://registry.yarnpkg.com/rc-util/-/rc-util-5.5.0.tgz#76321bcb5c12f01f42bff9b971f170ff19506e5a"
   integrity sha512-YJB+zZGvCll/bhxXRVLAekr7lOvTgqMlRIhgINoINfUek7wQvi5sft46NOi3yYUYhocpuW4k8+5okW46sBsZAQ==
@@ -10114,6 +10105,11 @@ react-refresh@0.8.3:
   version "0.8.3"
   resolved "https://registry.yarnpkg.com/react-refresh/-/react-refresh-0.8.3.tgz#721d4657672d400c5e3c75d063c4a85fb2d5d68f"
   integrity sha512-X8jZHc7nCMjaCqoU+V2I0cOhNW+QMBwSUkeXnTi8IPe6zaRWfn60ZzvFDZqWPfmSJfjub7dDW1SP0jaHWLu/hg==
+
+react-simple-star-rating@1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/react-simple-star-rating/-/react-simple-star-rating-1.0.6.tgz#ac6d9f937cc1833b457da2dd353891e8571c3dc1"
+  integrity sha512-wQzvZ9nPV7vtNxKF/yUxVjhkQhdhAkEEs5i6FhkFWwKfK4pZDc0sD/F3tQdaKQBJfKW4NGLI3RGkgRfQ/8vmxQ==
 
 react-test-renderer@16.14.0:
   version "16.14.0"
