@@ -1,0 +1,142 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "postgres"
+  url = "***"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// --------------------------------------
+
+model User {
+  id             Int         @id @default(autoincrement())
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  name           String?
+  email          String      @unique
+  hashedPassword String?
+  role           String      @default("user")
+  sessions       Session[]
+  reviews        Review[]
+  favourites     Favourite[]
+  ratings        Rating[]
+}
+
+model Session {
+  id                 Int       @id @default(autoincrement())
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+  expiresAt          DateTime?
+  handle             String    @unique
+  user               User?     @relation(fields: [userId], references: [id])
+  userId             Int?
+  hashedSessionToken String?
+  antiCSRFToken      String?
+  publicData         String?
+  privateData        String?
+}
+
+model Movie {
+  id         Int              @id @default(autoincrement())
+  createdAt  DateTime         @default(now())
+  updateAt   DateTime         @updatedAt
+  banner     String?
+  art        String
+  title      String
+  age        String
+  release    String
+  genres     GenresOnMoives[]
+  trailer    String
+  tagline    String
+  overview   String
+  runtime    Int
+  actors     ActorsOnMovies[]
+  status     String
+  language   String?
+  budget     Int?
+  revenue    Int?
+  reivews    Review[]
+  favourites Favourite[]
+  ratings    Rating[]
+}
+
+model Actor {
+  id        Int              @id @default(autoincrement())
+  createdAt DateTime         @default(now())
+  updateAt  DateTime         @updatedAt
+  image     String
+  name      String
+  age       Int
+  movies    ActorsOnMovies[]
+}
+
+model ActorsOnMovies {
+  role      String
+  movie     Movie    @relation(fields: [movieId], references: [id])
+  movieId   Int
+  actor     Actor    @relation(fields: [actorId], references: [id])
+  actorId   Int
+  createdAt DateTime @default(now())
+
+  @@id([movieId, actorId])
+}
+
+model Genre {
+  id        Int              @id @default(autoincrement())
+  createdAt DateTime         @default(now())
+  updateAt  DateTime         @updatedAt
+  name      String
+  movies    GenresOnMoives[]
+}
+
+model GenresOnMoives {
+  movie     Movie    @relation(fields: [movieId], references: [id])
+  movieId   Int
+  genre     Genre    @relation(fields: [genreId], references: [id])
+  genreId   Int
+  createdAt DateTime @default(now())
+
+  @@id([movieId, genreId])
+}
+
+model Review {
+  id            Int      @id @default(autoincrement())
+  createdAt     DateTime @default(now())
+  updateAt      DateTime @updatedAt
+  title         String
+  content       String
+  by            String
+  rating        Rating   @relation(fields: [ratingUserId, ratingMovieId], references: [userId, movieId])
+  movie         Movie?   @relation(fields: [movieId], references: [id])
+  movieId       Int?
+  user          User?    @relation(fields: [userId], references: [id])
+  userId        Int?
+  ratingUserId  Int
+  ratingMovieId Int
+}
+
+model Favourite {
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  movie     Movie    @relation(fields: [movieId], references: [id])
+  movieId   Int
+  createdAt DateTime @default(now())
+
+  @@id([userId, movieId])
+}
+
+model Rating {
+  value     Int      @default(0)
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  movie     Movie    @relation(fields: [movieId], references: [id])
+  movieId   Int
+  createdAt DateTime @default(now())
+  review    Review[]
+
+  @@id([userId, movieId])
+}

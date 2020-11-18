@@ -1,14 +1,16 @@
-import React from "react"
-import { useRouter, BlitzPage } from "blitz"
-import Layout from "app/layouts/Layout"
 import { SignupForm } from "app/auth/components/SignupForm"
+import Layout from "app/layouts/Layout"
+import { BlitzPage, useRouter } from "blitz"
+import React from "react"
 
 const SignupPage: BlitzPage = () => {
   const router = useRouter()
 
   return (
-    <div>
-      <SignupForm onSuccess={() => router.push("/")} />
+    <div className="page container mx-auto ">
+      <div className="flex justify-center py-40">
+        <SignupForm onSuccess={() => router.push("/")} />
+      </div>
     </div>
   )
 }

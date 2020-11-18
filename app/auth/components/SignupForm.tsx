@@ -1,9 +1,9 @@
-import React from "react"
-import { useMutation } from "blitz"
-import { LabeledTextField } from "app/components/LabeledTextField"
-import { Form, FORM_ERROR } from "app/components/Form"
 import signup from "app/auth/mutations/signup"
 import { SignupInput } from "app/auth/validations"
+import { Form, FORM_ERROR } from "app/components/Form"
+import { LabeledTextField } from "app/components/LabeledTextField"
+import { useMutation } from "blitz"
+import React from "react"
 
 type SignupFormProps = {
   onSuccess?: () => void
@@ -13,13 +13,11 @@ export const SignupForm = (props: SignupFormProps) => {
   const [signupMutation] = useMutation(signup)
 
   return (
-    <div>
-      <h1>Create an Account</h1>
-
+    <div className="w-1/2">
       <Form
         submitText="Create Account"
         schema={SignupInput}
-        initialValues={{ email: "", password: "" }}
+        initialValues={{ name: "", email: "", password: "" }}
         onSubmit={async (values) => {
           try {
             await signupMutation(values)
@@ -34,6 +32,7 @@ export const SignupForm = (props: SignupFormProps) => {
           }
         }}
       >
+        <LabeledTextField name="name" label="Name" placeholder="Name" />
         <LabeledTextField name="email" label="Email" placeholder="Email" />
         <LabeledTextField name="password" label="Password" placeholder="Password" type="password" />
       </Form>

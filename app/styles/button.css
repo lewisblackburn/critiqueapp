@@ -1,0 +1,13 @@
+.button {
+  @apply bg-woodsmoke-500 text-woodsmoke-50 text-sm font-bold uppercase py-4 px-6 rounded;
+}
+
+.button:hover {
+  @apply bg-woodsmoke-700;
+}
+
+.button:focus {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
+}

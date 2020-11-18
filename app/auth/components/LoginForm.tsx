@@ -1,9 +1,9 @@
-import React from "react"
-import { AuthenticationError, Link, useMutation } from "blitz"
-import { LabeledTextField } from "app/components/LabeledTextField"
-import { Form, FORM_ERROR } from "app/components/Form"
 import login from "app/auth/mutations/login"
 import { LoginInput } from "app/auth/validations"
+import { Form, FORM_ERROR } from "app/components/Form"
+import { LabeledTextField } from "app/components/LabeledTextField"
+import { AuthenticationError, useMutation } from "blitz"
+import React from "react"
 
 type LoginFormProps = {
   onSuccess?: () => void
@@ -13,9 +13,7 @@ export const LoginForm = (props: LoginFormProps) => {
   const [loginMutation] = useMutation(login)
 
   return (
-    <div>
-      <h1>Login</h1>
-
+    <div className="w-1/2">
       <Form
         submitText="Login"
         schema={LoginInput}
@@ -39,10 +37,6 @@ export const LoginForm = (props: LoginFormProps) => {
         <LabeledTextField name="email" label="Email" placeholder="Email" />
         <LabeledTextField name="password" label="Password" placeholder="Password" type="password" />
       </Form>
-
-      <div style={{ marginTop: "1rem" }}>
-        Or <Link href="/signup">Sign Up</Link>
-      </div>
     </div>
   )
 }

@@ -1,7 +1,10 @@
-import { AppProps, ErrorComponent, useRouter, AuthenticationError, AuthorizationError } from "blitz"
+import LoginForm from "app/auth/components/LoginForm"
+import "app/styles/index.css"
+import { AppProps, AuthenticationError, AuthorizationError, ErrorComponent, useRouter } from "blitz"
 import { ErrorBoundary, FallbackProps } from "react-error-boundary"
 import { queryCache } from "react-query"
-import LoginForm from "app/auth/components/LoginForm"
+
+import "app/styles/index.css"
 
 export default function App({ Component, pageProps }: AppProps) {
   const getLayout = Component.getLayout || ((page) => page)
