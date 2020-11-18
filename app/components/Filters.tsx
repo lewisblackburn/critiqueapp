@@ -10,27 +10,39 @@ interface FilterProps {
 export const Filters: React.FC<FilterProps> = ({ setAge, setOrderBy }) => {
   const [filterAge, setFilterAge] = useState({})
   const [filterOrderBy, setFilterOrderBy] = useState({})
+
+  let marks = {
+    0: "U",
+    1: "PG",
+    2: "12",
+    3: "12A",
+    4: "15",
+    5: "16",
+    6: "18",
+    7: "All",
+  }
+
   const handleAgeChange = (value) => {
     switch (value) {
-      case 70:
+      case 7:
         setFilterAge({})
         break
-      case 60:
+      case 6:
         setFilterAge("18")
         break
-      case 50:
+      case 5:
         setFilterAge("16")
         break
-      case 40:
+      case 4:
         setFilterAge("15")
         break
-      case 30:
+      case 3:
         setFilterAge("12A")
         break
-      case 20:
+      case 2:
         setFilterAge("12")
         break
-      case 10:
+      case 1:
         setFilterAge("PG")
         break
       case 0:
@@ -64,22 +76,7 @@ export const Filters: React.FC<FilterProps> = ({ setAge, setOrderBy }) => {
         options={["Title (ASC)", "Title (DESC)", "Runtime (ASC)", "Runtime (DESC)"]}
         handleSelectChange={handleOrderByChange}
       />
-      <CustomSlider
-        handleSliderChange={handleAgeChange}
-        min={0}
-        max={70}
-        defaultValue={70}
-        marks={{
-          0: "U",
-          10: "PG",
-          20: "12",
-          30: "12A",
-          40: "15",
-          50: "16",
-          60: "18",
-          70: "All",
-        }}
-      />
+      <CustomSlider min={0} max={7} marks={marks} handleSliderChange={handleAgeChange} />
       <button
         onClick={() => {
           setAge(filterAge)

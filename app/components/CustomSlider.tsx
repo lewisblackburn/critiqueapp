@@ -1,11 +1,9 @@
-import Slider from "rc-slider"
-import "rc-slider/assets/index.css"
 import React from "react"
+import ReactSlider from "react-slider"
 
 interface CustomSliderProps {
   min: number
   max: number
-  defaultValue: number
   marks: {}
   handleSliderChange: (value) => void
 }
@@ -13,32 +11,24 @@ interface CustomSliderProps {
 export const CustomSlider: React.FC<CustomSliderProps> = ({
   min,
   max,
-  defaultValue,
-  marks,
   handleSliderChange,
+  marks,
 }) => {
   return (
     <div className="w-full px-10">
-      <Slider
+      <ReactSlider
+        className="flex items-center justify-center horizontal-slider"
         min={min}
         max={max}
-        defaultValue={defaultValue}
-        marks={marks}
-        step={null}
+        // @ts-ignore
+        marks
+        defaultValue={max}
+        markClassName="slider-mark"
+        thumbClassName="bg-woodsmoke-300 text-woodsmoke-900 px-2 cursor-pointer"
+        trackClassName="bg-woodsmoke-500 text-woodsmoke-500 rounded"
         onChange={(value) => handleSliderChange(value)}
-        handleStyle={{
-          background: "#121212",
-        }}
-        dotStyle={{
-          background: "black",
-          border: "none",
-        }}
-        trackStyle={{
-          background: "#202020",
-        }}
-        railStyle={{
-          background: "#202020",
-        }}
+        renderThumb={(props, state) => <div {...props}>{marks[state.valueNow]}</div>}
+        renderTrack={(props) => <div {...props}>.</div>}
       />
     </div>
   )
