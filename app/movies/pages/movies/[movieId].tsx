@@ -213,7 +213,7 @@ export const Movie = () => {
                 data: {
                   title,
                   content,
-                  by: currentUser!.name,
+                  by: currentUser!.name || "",
                   rating: {
                     connectOrCreate: {
                       where: {

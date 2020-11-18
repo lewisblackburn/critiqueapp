@@ -22,7 +22,7 @@ const NewReviewPage: BlitzPage = () => {
               data: {
                 content: "very good",
                 title: "here is my review",
-                by: currentUser!.name,
+                by: currentUser!.name || "",
                 movie: {
                   connect: {
                     id: movieId,
