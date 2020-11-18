@@ -6,7 +6,7 @@ import getReviews from "app/reviews/queries/getReviews"
 import { BlitzPage, usePaginatedQuery, useRouter } from "blitz"
 import { Suspense } from "react"
 
-const ITEMS_PER_PAGE = 100
+const ITEMS_PER_PAGE = 10
 
 export const ReviewsList = () => {
   const router = useRouter()
@@ -26,13 +26,22 @@ export const ReviewsList = () => {
     return (
       <div>
         <ReviewList reviews={reviews} />
-
-        <button disabled={page === 0} onClick={goToPreviousPage}>
-          Previous
-        </button>
-        <button disabled={!hasMore} onClick={goToNextPage}>
-          Next
-        </button>
+        <div className="flex items-center justify-between">
+          <button
+            className={`button ${!hasMore && "bg-woodsmoke-800 text-woodsmoke-400"}`}
+            disabled={page === 0}
+            onClick={goToPreviousPage}
+          >
+            Previous
+          </button>
+          <button
+            className={`button ${!hasMore && "bg-woodsmoke-800 text-woodsmoke-400"}`}
+            disabled={!hasMore}
+            onClick={goToNextPage}
+          >
+            Next
+          </button>
+        </div>
       </div>
     )
   } else return null

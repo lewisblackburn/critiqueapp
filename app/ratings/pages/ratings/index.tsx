@@ -1,47 +1,63 @@
+import { Movie } from "@prisma/client"
 import { Loading } from "app/components/Loading"
-import { useCurrentUser } from "app/hooks/useCurrentUser"
 import Layout from "app/layouts/Layout"
 import getRatings from "app/ratings/queries/getRatings"
-import { BlitzPage, Link, usePaginatedQuery, useRouter } from "blitz"
+import { BlitzPage, Link, useInfiniteQuery, useRouter } from "blitz"
 import { Suspense } from "react"
 import { Img } from "react-image"
 
-const ITEMS_PER_PAGE = 8
-
 export const RatingsList = () => {
   const router = useRouter()
+  const [ratings, { isFetchingMore, fetchMore, canFetchMore }] = useInfiniteQuery(
+    getRatings,
+    (
+      page = {
+        take: 12,
+        skip: 0,
+        include: { movie: {} },
+      }
+    ) => page,
+    {
+      getFetchMore: (lastGroup) => lastGroup.nextPage,
+    }
+  )
 
-  const currentUser = useCurrentUser()
-  const page = Number(router.query.page) || 0
-  const [{ ratings, hasMore }] = usePaginatedQuery(getRatings, {
-    where: { userId: currentUser?.id },
-    skip: ITEMS_PER_PAGE * page,
-    take: ITEMS_PER_PAGE,
-    include: { movie: {} },
+  let newRatings: Movie[] = []
+
+  ratings.forEach((group) => {
+    group.ratings.forEach((rating) => {
+      // @ts-ignore
+      newRatings.push(rating.movie)
+    })
   })
 
-  const goToPreviousPage = () => router.push({ query: { page: page - 1 } })
-  const goToNextPage = () => router.push({ query: { page: page + 1 } })
+  console.log(newRatings)
 
   if (ratings) {
     return (
       <div>
         <div className="grid grid-flow-row grid-cols-4 gap-5 py-5">
-          {ratings.map((rating: any, i) => (
-            <Link key={i} href={`movies/${rating.movieId}`}>
+          {newRatings.map((movie: Movie, i) => (
+            <Link key={i} href={`movies/${movie.id}`}>
               <a>
-                <Img className="rounded" alt={rating.movie.art} src={rating.movie.art} />
+                <Img className="rounded" alt={movie.art} src={movie.art} />
               </a>
             </Link>
           ))}
         </div>
-
-        <button disabled={page === 0} onClick={goToPreviousPage}>
-          Previous
-        </button>
-        <button disabled={!hasMore} onClick={goToNextPage}>
-          Next
-        </button>
+        <div className="flex justify-center">
+          <button
+            className="bg-gray-900 text-white py-2"
+            onClick={() => fetchMore()}
+            disabled={!canFetchMore || !!isFetchingMore}
+          >
+            {isFetchingMore
+              ? "Loading more..."
+              : canFetchMore
+              ? "Load More"
+              : "Nothing more to load"}
+          </button>
+        </div>
       </div>
     )
   } else return null

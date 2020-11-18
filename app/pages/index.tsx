@@ -7,15 +7,9 @@ import { BlitzPage, Link, useQuery } from "blitz"
 import { Suspense } from "react"
 import { Img } from "react-image"
 
-// TODO:
-/*
-  1. add image placeholders
-    2. different star library  
-*/
-
 const Banner = () => {
   const [{ ratings }] = useQuery(getRatings, {
-    orderBy: { value: "asc" },
+    orderBy: { value: "desc" },
     take: 1,
     include: { movie: {} },
   })
@@ -25,7 +19,7 @@ const Banner = () => {
         <Link href={`/movies/${ratings[0].movieId}`}>
           <a>
             <Img
-              className="w-full h-64 rounded"
+              className="w-full h-64 rounded object-cover"
               src={(ratings[0] as any).movie.banner}
               alt="movie banner"
             />

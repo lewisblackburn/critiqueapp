@@ -1,36 +1,51 @@
+import { Movie } from "@prisma/client"
 import { Loading } from "app/components/Loading"
-import { FavouriteList } from "app/favourites/components/FavouriteList"
 import getFavourites from "app/favourites/queries/getFavourites"
-import { useCurrentUser } from "app/hooks/useCurrentUser"
 import Layout from "app/layouts/Layout"
-import { BlitzPage, usePaginatedQuery, useRouter } from "blitz"
+import { MovieList } from "app/movies/components/MovieList"
+import { BlitzPage, useInfiniteQuery, useRouter } from "blitz"
 import { Suspense } from "react"
-
-const ITEMS_PER_PAGE = 8
 
 export const FavouritesList = () => {
   const router = useRouter()
-  const currentUser = useCurrentUser()
-  const page = Number(router.query.page) || 0
-  const [{ favourites, hasMore }] = usePaginatedQuery(getFavourites, {
-    where: { userId: currentUser?.id },
-    skip: ITEMS_PER_PAGE * page,
-    take: ITEMS_PER_PAGE,
-  })
+  const [favourites, { isFetchingMore, fetchMore, canFetchMore }] = useInfiniteQuery(
+    getFavourites,
+    (
+      page = {
+        take: 12,
+        skip: 0,
+      }
+    ) => page,
+    {
+      getFetchMore: (lastGroup) => lastGroup.nextPage,
+    }
+  )
 
-  const goToPreviousPage = () => router.push({ query: { page: page - 1 } })
-  const goToNextPage = () => router.push({ query: { page: page + 1 } })
+  let newFavourites: Movie[] = []
+
+  favourites.forEach((group) => {
+    group.favourites.forEach((favourite) => {
+      newFavourites.push(favourite.movie)
+    })
+  })
 
   if (favourites) {
     return (
       <div>
-        <FavouriteList favourites={favourites} />
-        <button disabled={page === 0} onClick={goToPreviousPage}>
-          Previous
-        </button>
-        <button disabled={!hasMore} onClick={goToNextPage}>
-          Next
-        </button>
+        <MovieList movies={newFavourites} />
+        <div className="flex justify-center">
+          <button
+            className="bg-gray-900 text-white py-2"
+            onClick={() => fetchMore()}
+            disabled={!canFetchMore || !!isFetchingMore}
+          >
+            {isFetchingMore
+              ? "Loading more..."
+              : canFetchMore
+              ? "Load More"
+              : "Nothing more to load"}
+          </button>
+        </div>
       </div>
     )
   }
