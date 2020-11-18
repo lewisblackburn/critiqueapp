@@ -2,68 +2,29 @@ import { Movie } from "@prisma/client"
 import { Loading } from "app/components/Loading"
 import { useCurrentUser } from "app/hooks/useCurrentUser"
 import Layout from "app/layouts/Layout"
-import getRatings from "app/ratings/queries/getRatings"
-import { BlitzPage, Link, useInfiniteQuery, useRouter } from "blitz"
+import { MovieList } from "app/movies/components/MovieList"
+import getUserRatings from "app/ratings/queries/getUserRatings"
+import { BlitzPage, useQuery } from "blitz"
 import { Suspense } from "react"
-import { Img } from "react-image"
 
 export const RatingsList = () => {
-  const router = useRouter()
   const currentUser = useCurrentUser()
-  const [ratings, { isFetchingMore, fetchMore, canFetchMore }] = useInfiniteQuery(
-    getRatings,
-    (
-      page = {
-        where: { userId: currentUser?.id },
-        take: 12,
-        skip: 0,
-        include: { movie: {} },
-      }
-    ) => page,
-    {
-      getFetchMore: (lastGroup) => lastGroup.nextPage,
-    }
-  )
+  const [user] = useQuery(getUserRatings, { where: { id: currentUser?.id } })
 
-  let newRatings: Movie[] = []
+  let movies: Movie[] = []
 
-  ratings.forEach((group) => {
-    group.ratings.forEach((rating) => {
-      // @ts-ignore
-      newRatings.push(rating.movie)
-    })
+  user?.ratings.forEach((rating) => {
+    movies.push(rating.movie)
   })
 
-  console.log(newRatings)
-
-  if (ratings) {
+  if (movies.length > 0) {
     return (
       <div>
-        <div className="grid grid-flow-row grid-cols-4 gap-5 py-5">
-          {newRatings.map((movie: Movie, i) => (
-            <Link key={i} href={`movies/${movie.id}`}>
-              <a>
-                <Img className="rounded" alt={movie.art} src={movie.art} />
-              </a>
-            </Link>
-          ))}
-        </div>
-        <div className="flex justify-center">
-          <button
-            className="bg-gray-900 text-white py-2"
-            onClick={() => fetchMore()}
-            disabled={!canFetchMore || !!isFetchingMore}
-          >
-            {isFetchingMore
-              ? "Loading more..."
-              : canFetchMore
-              ? "Load More"
-              : "Nothing more to load"}
-          </button>
-        </div>
+        <MovieList movies={movies} />{" "}
       </div>
     )
-  } else return null
+  }
+  return null
 }
 
 const RatingsPage: BlitzPage = () => {
@@ -76,6 +37,6 @@ const RatingsPage: BlitzPage = () => {
   )
 }
 
-RatingsPage.getLayout = (page) => <Layout title={"Ratings"}>{page}</Layout>
+RatingsPage.getLayout = (page) => <Layout title={"Favourites"}>{page}</Layout>
 
 export default RatingsPage

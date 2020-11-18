@@ -1,55 +1,31 @@
 import { Movie } from "@prisma/client"
 import { Loading } from "app/components/Loading"
-import getFavourites from "app/favourites/queries/getFavourites"
+import getUserFavourites from "app/favourites/queries/getUserFavourites"
+import { useCurrentUser } from "app/hooks/useCurrentUser"
 import Layout from "app/layouts/Layout"
 import { MovieList } from "app/movies/components/MovieList"
-import { BlitzPage, useInfiniteQuery, useRouter } from "blitz"
+import { BlitzPage, useQuery } from "blitz"
 import { Suspense } from "react"
 
 export const FavouritesList = () => {
-  const router = useRouter()
-  const [favourites, { isFetchingMore, fetchMore, canFetchMore }] = useInfiniteQuery(
-    getFavourites,
-    (
-      page = {
-        take: 12,
-        skip: 0,
-      }
-    ) => page,
-    {
-      getFetchMore: (lastGroup) => lastGroup.nextPage,
-    }
-  )
+  const currentUser = useCurrentUser()
+  const [user] = useQuery(getUserFavourites, { where: { id: currentUser?.id } })
 
-  let newFavourites: Movie[] = []
+  let movies: Movie[] = []
 
-  favourites.forEach((group) => {
-    group.favourites.forEach((favourite) => {
-      newFavourites.push(favourite.movie)
-    })
+  user?.favourites.forEach((favourite) => {
+    movies.push(favourite.movie)
   })
 
-  if (favourites) {
+  console.log(movies)
+
+  if (movies.length > 0) {
     return (
       <div>
-        <MovieList movies={newFavourites} />
-        <div className="flex justify-center">
-          <button
-            className="bg-gray-900 text-white py-2"
-            onClick={() => fetchMore()}
-            disabled={!canFetchMore || !!isFetchingMore}
-          >
-            {isFetchingMore
-              ? "Loading more..."
-              : canFetchMore
-              ? "Load More"
-              : "Nothing more to load"}
-          </button>
-        </div>
+        <MovieList movies={movies} />
       </div>
     )
-  }
-  return null
+  } else return null
 }
 
 const FavouritesPage: BlitzPage = () => {

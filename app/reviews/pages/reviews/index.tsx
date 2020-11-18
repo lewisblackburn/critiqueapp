@@ -13,7 +13,7 @@ export const ReviewsList = () => {
   const currentUser = useCurrentUser()
   const page = Number(router.query.page) || 0
   const [{ reviews, hasMore }] = usePaginatedQuery(getReviews, {
-    where: { userId: currentUser?.id },
+    where: { userId: currentUser?.id || 0 },
     orderBy: { id: "asc" },
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,

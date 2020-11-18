@@ -59,12 +59,12 @@ export const Header: React.FC<HeaderProps> = ({}) => {
         <div className="flex w-full justify-end">
           <div className="grid grid-flow-col gap-5">
             <Link href="/signup">
-              <a className="button small">
+              <a className="bg-woodsmoke-500 text-woodsmoke-50 text-xs font-bold uppercase rounded py-2 px-4">
                 <strong>Sign Up</strong>
               </a>
             </Link>
             <Link href="/login">
-              <a className="button small">
+              <a className="bg-woodsmoke-500 text-woodsmoke-50 text-xs font-bold uppercase rounded py-2 px-4">
                 <strong>Login</strong>
               </a>
             </Link>

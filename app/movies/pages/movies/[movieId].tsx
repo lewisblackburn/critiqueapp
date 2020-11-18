@@ -4,6 +4,7 @@ import createOrDeleteFavourite from "app/favourites/mutations/createOrDeleteFavo
 import getFavourite from "app/favourites/queries/getFavourite"
 import { useCurrentUser } from "app/hooks/useCurrentUser"
 import Layout from "app/layouts/Layout"
+import updateMovie from "app/movies/mutations/updateMovie"
 import getMovie from "app/movies/queries/getMovie"
 import createOrUpdateRating from "app/ratings/mutations/createOrUpdateRating"
 import getAverageRating from "app/ratings/queries/getAverageRating"
@@ -12,7 +13,7 @@ import ReviewForm from "app/reviews/components/ReviewForm"
 import { ReviewList } from "app/reviews/components/ReviewList"
 import createReview from "app/reviews/mutations/createReview"
 import { BlitzPage, Link, useMutation, useParam, useQuery } from "blitz"
-import { Suspense, useState } from "react"
+import { Suspense, useEffect, useState } from "react"
 import { RiEditCircleLine, RiHeartFill, RiPlayFill, RiShareBoxFill } from "react-icons/ri"
 import Rating from "react-simple-star-rating"
 import { formatMoney } from "utils/formatMoney"
@@ -33,6 +34,18 @@ export const Movie = () => {
   const [averageRating, { refetch: averageRatingRefetch }] = useQuery(getAverageRating, {
     where: { movieId },
   })
+
+  const [updateMovieMutation] = useMutation(updateMovie)
+  useEffect(() => {
+    updateMovieMutation({
+      where: {
+        id: movie.id,
+      },
+      data: {
+        views: movie.views + 1,
+      },
+    })
+  }, [movieId])
 
   const ages = {
     U: "text-green-500 border-green-500",

@@ -8,7 +8,6 @@ export default async function getFavourites(
   ctx: Ctx
 ) {
   ctx.session.authorize()
-
   const favourites = await db.favourite.findMany({
     where,
     orderBy,

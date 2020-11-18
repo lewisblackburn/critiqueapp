@@ -2,25 +2,26 @@ import { Loading } from "app/components/Loading"
 import Layout from "app/layouts/Layout"
 import { MovieList } from "app/movies/components/MovieList"
 import getMovies from "app/movies/queries/getMovies"
-import getRatings from "app/ratings/queries/getRatings"
 import { BlitzPage, Link, useQuery } from "blitz"
 import { Suspense } from "react"
 import { Img } from "react-image"
 
 const Banner = () => {
-  const [{ ratings }] = useQuery(getRatings, {
-    orderBy: { value: "desc" },
+  const [{ movies }] = useQuery(getMovies, {
+    where: {},
+    orderBy: {
+      views: "desc",
+    },
     take: 1,
-    include: { movie: {} },
   })
-  if (ratings[0]) {
+  if (movies[0]) {
     return (
       <div className="mb-20">
-        <Link href={`/movies/${ratings[0].movieId}`}>
+        <Link href={`/movies/${movies[0].id}`}>
           <a>
             <Img
               className="w-full h-64 rounded object-cover"
-              src={(ratings[0] as any).movie.banner}
+              src={movies[0].banner || ""}
               alt="movie banner"
             />
           </a>
