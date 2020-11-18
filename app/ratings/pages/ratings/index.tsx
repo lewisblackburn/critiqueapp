@@ -1,5 +1,6 @@
 import { Movie } from "@prisma/client"
 import { Loading } from "app/components/Loading"
+import { useCurrentUser } from "app/hooks/useCurrentUser"
 import Layout from "app/layouts/Layout"
 import getRatings from "app/ratings/queries/getRatings"
 import { BlitzPage, Link, useInfiniteQuery, useRouter } from "blitz"
@@ -8,10 +9,12 @@ import { Img } from "react-image"
 
 export const RatingsList = () => {
   const router = useRouter()
+  const currentUser = useCurrentUser()
   const [ratings, { isFetchingMore, fetchMore, canFetchMore }] = useInfiniteQuery(
     getRatings,
     (
       page = {
+        where: { userId: currentUser?.id },
         take: 12,
         skip: 0,
         include: { movie: {} },
